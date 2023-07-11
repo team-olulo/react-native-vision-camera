@@ -304,6 +304,16 @@ class CameraView(context: Context, private val frameProcessorThread: ExecutorSer
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
     updateLifecycleState()
+
+    // by - sds : CameraView가 있던 화면을 벗어나도 torch가 켜져 있는 상황이 발생해서 추가
+    coroutineScope.launch {
+      try {
+        configureSession()
+      } catch (e: Throwable) {
+        Log.e(TAG, "onDetachedFromWindow() threw: ${e.message}")
+        invokeOnError(e)
+      }
+    }
   }
 
   /**

@@ -32,6 +32,8 @@ suspend fun CameraView.takePhoto(options: ReadableMap): WritableMap = coroutineS
     }
   }
 
+  // by - sds : 특정 기기(Z플립4)에서 Flash를 키면 Capture 처리 속도가 떨어져서 torch를 사용하도록 변경
+  /*
   if (options.hasKey("flash")) {
     val flashMode = options.getString("flash")
     imageCapture!!.flashMode = when (flashMode) {
@@ -41,6 +43,7 @@ suspend fun CameraView.takePhoto(options: ReadableMap): WritableMap = coroutineS
       else -> throw InvalidTypeScriptUnionError("flash", flashMode ?: "(null)")
     }
   }
+   */
   // All those options are not yet implemented - see https://github.com/mrousavy/react-native-vision-camera/issues/75
   if (options.hasKey("photoCodec")) {
     // TODO photoCodec
@@ -64,6 +67,16 @@ suspend fun CameraView.takePhoto(options: ReadableMap): WritableMap = coroutineS
 
   val camera2Info = Camera2CameraInfo.from(camera!!.cameraInfo)
   val lensFacing = camera2Info.getCameraCharacteristic(CameraCharacteristics.LENS_FACING)
+
+  // by - sds : Flash 옵션 값에 따라 torch on/off 처리
+  try {
+    if (options.hasKey("flash")) {
+      val isFlashOn = options.getString("flash") == "on"
+      camera!!.cameraControl.enableTorch(isFlashOn)
+    }
+  } catch (e: Exception) {
+    e.printStackTrace()
+  }
 
   val results = awaitAll(
     async(coroutineContext) {
