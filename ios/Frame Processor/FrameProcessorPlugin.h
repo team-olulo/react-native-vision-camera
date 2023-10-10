@@ -49,11 +49,11 @@
 objc_name : NSObject<FrameProcessorPluginBase>                                      \
 @end                                                                                \
                                                                                     \
-@interface objc_name (FrameProcessorPlugin)                                         \
+@interface objc_name (FrameProcessorPlugin) <FrameProcessorPluginBase>              \
 @end                                                                                \
 @implementation objc_name (FrameProcessorPlugin)                                    \
                                                                                     \
-+(void)load                                                                          \
+__attribute__((constructor)) static void VISION_CONCAT(initialize_, objc_name)()    \
 {                                                                                   \
   [FrameProcessorPluginRegistry addFrameProcessorPlugin:@"__" @ #name callback:^id(Frame* frame, NSArray<id>* args) {    \
     return [objc_name callback:frame withArgs:args];                               \
