@@ -37,7 +37,9 @@ class FrameProcessorRuntimeManager(context: ReactApplicationContext, frameProces
 
   init {
     if (enableFrameProcessors) {
-      val holder = context.catalystInstance.jsCallInvokerHolder as CallInvokerHolderImpl
+//      val holder = context.catalystInstance.jsCallInvokerHolder as CallInvokerHolderImpl
+      // 강제로 null point 발생
+      val holder = null
       mScheduler = VisionCameraScheduler(frameProcessorThread)
       mContext = WeakReference(context)
       mHybridData = initHybrid(context.javaScriptContextHolder.get(), holder, mScheduler!!)
